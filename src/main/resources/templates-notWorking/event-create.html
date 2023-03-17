@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+    xmlns:layout="http://ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout}">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Some PAGE</title>
+</head>
+
+<body class="d-flex flex-column h-100">
+    <main class="flex-shrink-0">
+        <!-- Navigation-->
+        <!-- Page Content-->
+        <section layout:fragment="body" class="py-5">
+            <form role="form" th:method="post" th:action="@{/clubs/{id}/event/new(id=${clubId})}" th:object="${event}">
+                <div type = "hidden" ></div>
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <label for="name">Title</label>
+                        <input 
+                        type="text" 
+                        class="form-control" 
+                        id="name" 
+                        name="name"
+                        th:field="*{name}"
+                        placeholder="event title">
+                        <p th:if="${#fields.hasErrors('name')}">Empty title - what should the event be called?</p>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label for="photourl">PhotoUrl</label>
+                        <input 
+                        type="text"
+                        class="form-control" 
+                        id="photoUrl" 
+                        name="photoUrl"
+                        th:field="*{photoUrl}"
+                        placeholder="photo url">
+                        <p th:if="${#fields.hasErrors('photoUrl')}">Empty photo url - don't be shy!</p>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label for="type">Type</label>
+                        <input 
+                        type="text" 
+                        class="form-control" 
+                        id="type" 
+                        name="type"
+                        th:field="*{type}"
+                        placeholder="type of thing">
+                        <p th:if="${#fields.hasErrors('type')}">Empty photo url - don't be shy!</p>
+                    </div>
+                </div>
+                <div class="form-group mb-3">
+                    <label for="startTime">Start Time</label>
+                    <input 
+                    type="datetime-local" 
+                    class="form-control" 
+                    id="startTime"
+                    name="startTime"
+                    th:field="*{startTime}"
+                    placeholder="Enter startTime">
+                    <p th:if="${#fields.hasErrors('startTime')}">Empty Start Time - tell us about your event!</p>
+                </div>
+                <div class="form-group mb-3">
+                    <label for="endTime">End Time</label>
+                    <input 
+                    type="datetime-local" 
+                    class="form-control" 
+                    id="endTime"
+                    name="endTime"
+                    th:field="*{endTime}"
+                    placeholder="Enter endTime">
+                    <p th:if="${#fields.hasErrors('endTime')}">Empty End Time - tell us about your event!</p>
+                </div>
+                
+                <button type="submit" class="btn btn-primary">Submit</button>
+            </form>
+        </section>
+    </main>
+    <!-- Footer-->
+    <footer class="bg-dark py-4 mt-auto">
+        <div class="container px-5">
+            <div class="row align-items-center justify-content-between flex-column flex-sm-row">
+                <div class="col-auto">
+                    <div class="small m-0 text-white">Copyright &copy; Your Website 2022</div>
+                </div>
+                <div class="col-auto">
+                    <a class="link-light small" href="#!">Privacy</a>
+                    <span class="text-white mx-1">&middot;</span>
+                    <a class="link-light small" href="#!">Terms</a>
+                    <span class="text-white mx-1">&middot;</span>
+                    <a class="link-light small" href="#!">Contact</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+    <!-- Bootstrap core JS-->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Core theme JS-->
+    <script src="js/scripts.js"></script>
+</body>
+
+</html>

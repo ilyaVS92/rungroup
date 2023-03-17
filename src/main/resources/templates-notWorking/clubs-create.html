@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+    xmlns:layout="http://ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout}">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Some PAGE</title>
+</head>
+
+<body class="d-flex flex-column h-100">
+    <main class="flex-shrink-0">
+        <!-- Navigation-->
+        <!-- Page Content-->
+        <section layout:fragment="body" class="py-5">
+
+                <form role="form" th:method="post" th:action="@{/clubs/new}" th:object="${club}">
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <label for="title">Title</label>
+                            <input 
+                            type="text" 
+                            class="form-control" 
+                            id="title" 
+                            name="title"
+                            th:field="*{title}"
+                            placeholder="Club title">
+                            <p th:if="${#fields.hasErrors('title')}">Empty title - what should the club be called?</p>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label for="photourl">PhotoUrl</label>
+                            <input 
+                            type="text" 
+                            class="form-control" 
+                            id="photoUrl" 
+                            name="photoUrl"
+                            th:field="*{photoUrl}"
+                            placeholder="photo url">
+                            <p th:if="${#fields.hasErrors('photoUrl')}">Empty photo url - don't be shy!</p>
+                        </div>
+                    </div>
+                    <div class="form-group mb-3">
+                        <label for="inputAddress">content</label>
+                        <input 
+                        type="text" 
+                        class="form-control" 
+                        id="content"
+                        name="content"
+                        th:field="*{content}"
+                        placeholder="Enter content">
+                        <p th:if="${#fields.hasErrors('content')}">Empty content - tell us about your club!</p>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Submit</button>
+                </form>
+        </section>
+    </main>
+    <!-- Footer-->
+    <footer class="bg-dark py-4 mt-auto">
+        <div class="container px-5">
+            <div class="row align-items-center justify-content-between flex-column flex-sm-row">
+                <div class="col-auto">
+                    <div class="small m-0 text-white">Copyright &copy; Your Website 2022</div>
+                </div>
+                <div class="col-auto">
+                    <a class="link-light small" href="#!">Privacy</a>
+                    <span class="text-white mx-1">&middot;</span>
+                    <a class="link-light small" href="#!">Terms</a>
+                    <span class="text-white mx-1">&middot;</span>
+                    <a class="link-light small" href="#!">Contact</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+    <!-- Bootstrap core JS-->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Core theme JS-->
+    <script src="js/scripts.js"></script>
+</body>
+
+</html>

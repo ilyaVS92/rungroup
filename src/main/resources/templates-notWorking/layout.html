@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+    xmlns:layout="http://ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout}">
+
+
+    <head>
+        <meta charset="UTF-8">
+        <title>Some PAGE</title>
+
+    </head>
+    <body class="d-flex flex-column h-100">
+        <main class="flex-shrink-0">
+            <!-- Navigation-->
+            <div th:insert="fragments/navbar"></div>
+
+            <!-- Page Content-->
+            <section layout:fragment="body" class="py-5">
+                <div class="container px-5 my-5">
+                    <div class="text-center mb-5">
+                        <h1 class="fw-bolder">Runners Near You</h1>
+                        <p class="lead fw-normal text-muted mb-0">Runners in your area</p>
+                    </div>
+                    <div class="row gx-5">
+                        <div>
+                            <form th:action="@{/clubs/search}" class="form-inline my-2 my-lg-0 mb-3">
+                                <input name="query" class="form-control mr-sm-2 mb--5" placeholder="Search club titles" aria-label="Search">
+                            </form>
+                        </div>
+                        <div th:each="club : ${clubs}" class="col-lg-6 mb-2">
+                            <div class="position-relative mb-5">
+                                <img class="img-fluid rounded-3 mb-3" th:src="${club.photoUrl}" alt=".can't.load."  width = "600" />
+                                <a th:text="${club.title}" class="h3 fw-bolder text-decoration-none link-dark stretched-link" href="#!">Project name</a>
+                            </div>
+                            <a class="btn btn-primary" th:href="@{/clubs/{id}/edit(id=${club.id})}" >Edit</a>
+                            <a class="btn btn-primary" th:href="@{/clubs/{id}/details(id=${club.id})}" >Details...</a>
+
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+        </main>
+        <!-- Footer-->
+        <div th:insert="fragments/footfrag"></div>
+    </body>
+</html>
