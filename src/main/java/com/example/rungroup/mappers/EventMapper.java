@@ -7,6 +7,8 @@ import java.time.LocalDateTime;
 
 import com.example.rungroup.dto.EventDto;
 import com.example.rungroup.entities.Event;
+import com.example.rungroup.entities.Event.EventBuilder;
+
 import org.springframework.context.annotation.Bean;
 
 
@@ -17,31 +19,31 @@ import lombok.AllArgsConstructor;
 public class EventMapper {
 
     public static Event mapToEvent(EventDto eventDto) {
-        return Event.builder()
-            .id(eventDto.getId())
-            .name(eventDto.getName())
-            .startTime(eventDto.getStartTime())
-            .endTime(eventDto.getEndTime())
-            .type(eventDto.getType())
-            .photoUrl(eventDto.getPhotoUrl())
-            .createdOn(eventDto.getCreatedOn())
-            .updatedOn(eventDto.getUpdatedOn())
-            // .club(ClubMapper.mapToClub(eventDto.getClub()))
-            .build();
+        Event event = new Event();
+        event.setId(eventDto.getId());
+        event.setName(eventDto.getName());
+        event.setStartTime(eventDto.getStartTime());
+        event.setEndTime(eventDto.getEndTime());
+        event.setType(eventDto.getType());
+        event.setPhotoUrl(eventDto.getPhotoUrl());
+        event.setCreatedOn(eventDto.getCreatedOn());
+        event.setUpdatedOn(eventDto.getUpdatedOn());
+        event.setClub(eventDto.getClub());
+        return event;
     }
 
 
     public static EventDto mapToEventDto (Event event){
-        return EventDto.builder()
-            .id(event.getId())
-            .name(event.getName())
-            .startTime(event.getStartTime())
-            .endTime(event.getEndTime())
-            .type(event.getType())
-            .photoUrl(event.getPhotoUrl())
-            .createdOn(event.getCreatedOn())
-            .updatedOn(event.getUpdatedOn())
-            // .club(ClubMapper.mapToClubDto(event.getClub()))
-            .build();
+        EventDto eventDto = new EventDto();
+        eventDto.setId(event.getId());
+        eventDto.setName(event.getName());
+        eventDto.setStartTime(event.getStartTime());
+        eventDto.setEndTime(event.getEndTime());
+        eventDto.setType(event.getType());
+        eventDto.setPhotoUrl(event.getPhotoUrl());
+        eventDto.setCreatedOn(event.getCreatedOn());
+        eventDto.setUpdatedOn(event.getUpdatedOn());
+        eventDto.setClub(event.getClub());
+        return eventDto;
     }
 }

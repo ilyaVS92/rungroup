@@ -3,7 +3,7 @@
         xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
         layout:decorate="~{layout}">
 <head>
-  <title>Club Create</title>
+  <title>Event details</title>
 </head>
 <body class="d-flex flex-column">
 
@@ -12,7 +12,7 @@
     <div class="container">
       <div class="text-center my-5">
         <h1 class="fw-bolder" th:text="${event.name}"></h1>
-        <p class="lead mb-0">Charlotte, NC</p>
+        <p class="lead mb-0">Event Details</p>
       </div>
     </div>
   </header>
@@ -29,8 +29,11 @@
             <h2 class="card-title">About this running event</h2>
             <p class="card-text" th:text="${event.type}"></p>
             <div type="hidden" th:value="${event.id}"></div>
-            <a class="btn btn-primary" th:href="@{/clubs/{clubId}/events/{eventId}/edit(clubId = ${clubId},eventId=${event.id})}">EditS</a>
-            <a class="btn btn-primary" th:href="@{/clubs/{clubId}/events/{eventId}/delete(eventId=${event.id})}">Delete</a>
+            <a class="btn btn-primary" th:object=${clubId} th:href="@{/clubs/{clubId}/events/{eventId}/edit(clubId = ${clubId},eventId=${event.id})}">EditS</a>
+            <form method="post" th:action="@{/clubs/{clubId}/events/{eventId}/delete(clubId = ${clubId}, eventId=${event.id})}">
+              <button type="submit" class="btn btn-primary">DELETE BTTN</button>
+              <!--<a class="btn btn-primary" th:method ="post" th:href="@{/clubs/{clubId}/events/{eventId}/delete(clubId = ${clubId}, eventId=${event.id})}">DeleteS</a>-->
+            </form>
 
             <!--<div th:if="${user.id} == ${event.club.createdBy.id}">
               <a class="btn btn-primary" th:href="@{/events/{eventId}/delete(eventId=${event.id})}">Delete</a>

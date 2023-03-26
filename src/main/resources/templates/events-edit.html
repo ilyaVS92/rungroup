@@ -9,7 +9,7 @@
 <main class="flex-shrink-0">
     <section layout:fragment="body" class="py-5">
         <div class="container">
-            <form role="form" method="post" th:action="@{/events/{eventId}/edit(eventId=${event.id})}" th:object="${event}">
+            <form role="form" method="post" th:action="@{/clubs/{clubId}/events/{eventId}/edit(clubId=${clubId}, eventId=${event.id})}" th:object="${event}">
                 <div class="form-row">
                     <div class="form-group col-md-6">
                         <label for="name">Name</label>
@@ -67,7 +67,6 @@
                             placeholder="End Time">
                     <p th:if="${#fields.hasErrors('endTime')}" class="text-danger" th:errors="*{endTime}"></p>
                 </div>
-                <div type="hidden" th:field="${event.club.getId()}"></div>
                 <button type="submit" class="btn btn-primary">SAVE EDITS</button>
             </form>
         </div>

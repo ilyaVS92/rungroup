@@ -13,4 +13,6 @@ public interface EventService {
     List<EventDto> findAllEvents();
     EventDto findById(Long id);
     void save(@Valid EventDto event);
+    void updateEvent(EventDto eventDto, Long eventId, Long clubId);
+    void delete(Long eventId);
 }

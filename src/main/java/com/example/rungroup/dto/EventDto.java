@@ -7,6 +7,8 @@ import java.time.LocalDateTime;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
+import com.example.rungroup.entities.ClubEntity;
+
 import lombok.*;
 import lombok.Builder;
 
@@ -29,6 +31,6 @@ public class EventDto {
     private LocalDateTime createdOn;
     private LocalDateTime updatedOn;
 
-    private ClubDto club;
+    private ClubEntity club;
 
 }

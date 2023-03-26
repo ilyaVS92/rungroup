@@ -1,4 +1,4 @@
-package com.example.rungroup.services;
+package com.example.rungroup.services.implementations;
 import com.example.rungroup.mappers.*;
 
 import java.util.List;
@@ -8,6 +8,9 @@ import org.springframework.stereotype.Service;
 
 import com.example.rungroup.dto.*;
 import com.example.rungroup.repos.*;
+import com.example.rungroup.security.SecurityUtil;
+import com.example.rungroup.services.ClubService;
+import com.example.rungroup.services.UserService;
 import com.example.rungroup.entities.*;
 
 import java.time.LocalDateTime;
@@ -23,7 +26,8 @@ import lombok.AllArgsConstructor;
 public class ClubServiceImpl implements ClubService {
 
     private ClubRepo clubRepo;
-    // private EventService eventSrv;
+    private UserRepo userRepo;
+    private UserService userServ;
 
     @Override
     public List<ClubDto> findAll() {
@@ -35,7 +39,10 @@ public class ClubServiceImpl implements ClubService {
 
     @Override
     public void save(ClubDto clubDto) {
-        clubRepo.save(ClubMapper.mapToClub(clubDto));
+        String userName = SecurityUtil.getSessionUser();
+        ClubEntity club = ClubMapper.mapToClub(clubDto);
+        club.setCreatedBy(userServ.findByUserName(userName));
+        clubRepo.save(club);
     }
 
     public ClubEntity findEntityById(Long id){
@@ -47,7 +54,11 @@ public class ClubServiceImpl implements ClubService {
     }
 
     public void updateClub(ClubDto clubDto){
-        clubRepo.save(ClubMapper.mapToClub(clubDto));
+        String userName = SecurityUtil.getSessionUser();
+        ClubEntity club = ClubMapper.mapToClub(clubDto);
+        club.setCreatedBy(userServ.findByUserName(userName));
+        clubRepo.save(club);
+        // clubRepo.save(ClubMapper.mapToClub(clubDto).setCreatedBy(userServ.findByUserName(SecurityUtil.getSessionUser())));
     }
 
     @Override
@@ -57,7 +68,6 @@ public class ClubServiceImpl implements ClubService {
             .map(club -> ClubMapper.mapToClubDto(club))
             .collect(Collectors.toList());
     }
-
 
     @Override
     public void deleteByid(Long id) {

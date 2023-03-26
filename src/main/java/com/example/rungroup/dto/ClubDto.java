@@ -1,6 +1,8 @@
 package com.example.rungroup.dto;
 
 import com.example.rungroup.dto.*;
+import com.example.rungroup.entities.UserEntity;
+
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -25,6 +27,7 @@ public class ClubDto {
     private String content;
     private LocalDateTime createdOn;
     private LocalDateTime updatedOn;
-    
+
+    private UserEntity createdBy;
     private List<EventDto> eventList;
 }

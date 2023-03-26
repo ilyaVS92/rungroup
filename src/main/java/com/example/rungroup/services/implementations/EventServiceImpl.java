@@ -1,4 +1,4 @@
-package com.example.rungroup.services;
+package com.example.rungroup.services.implementations;
 
 import org.springframework.stereotype.Service;
 import com.example.rungroup.entities.*;
@@ -6,6 +6,9 @@ import com.example.rungroup.mappers.EventMapper;
 import com.example.rungroup.dto.EventDto;
 import com.example.rungroup.repos.ClubRepo;
 import com.example.rungroup.repos.EventRepo;
+import com.example.rungroup.services.ClubService;
+import com.example.rungroup.services.EventService;
+
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -53,6 +56,17 @@ public class EventServiceImpl implements EventService{
         System.out.println("Status OK: save successful");
     }
 
+    @Override
+    public void updateEvent(EventDto eventDto, Long eventId, Long clubId) {
+        eventDto.setClub(clubSrv.findEntityById(clubId));
+        eventDto.setId(eventId);
+        eventRepo.save(EventMapper.mapToEvent(eventDto));
 
+    }
 
+    @Override
+    public void delete(Long eventId) {
+        eventRepo.deleteById(eventId);
+        System.out.println("=====>DELETING<===== event with ID="+eventId);
+    }
 }
