@@ -8,6 +8,7 @@ import com.example.rungroup.repos.ClubRepo;
 import com.example.rungroup.repos.EventRepo;
 import com.example.rungroup.services.ClubService;
 import com.example.rungroup.services.EventService;
+import com.example.rungroup.services.UserService;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -23,12 +24,13 @@ public class EventServiceImpl implements EventService{
     private ClubRepo clubRepo;
     private EventRepo eventRepo;
     private ClubService clubSrv;
+    private UserService userSrv;
 
     @Override
     public void createEvent(EventDto eventDto, Long id) {
-        
         Event event = EventMapper.mapToEvent(eventDto);
         event.setClub(clubRepo.findById(id).orElseThrow());
+        // event.setCreatedBy(userSrv.getCurrentUserEntity());
         eventRepo.save(event);
     }
 
@@ -52,7 +54,7 @@ public class EventServiceImpl implements EventService{
 
     @Override
     public void save(@Valid EventDto event) {
-        eventRepo.save(EventMapper.mapToEvent(event));
+        eventRepo.save(EventMapper.mapToEvent(event).);
         System.out.println("Status OK: save successful");
     }
 

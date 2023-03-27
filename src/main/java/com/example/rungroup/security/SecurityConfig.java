@@ -21,7 +21,7 @@ import lombok.AllArgsConstructor;
 public class SecurityConfig {
 
     private CustomUserDetailsService userDetailsSrv;
-    private BCryptPasswordEncoder passwEncoder;
+    // private BCryptPasswordEncoder passwEncoder;
 
     @Bean
     public static BCryptPasswordEncoder passwEncoder(){
@@ -51,6 +51,6 @@ public class SecurityConfig {
     }
     
     public void configure(AuthenticationManagerBuilder builder) throws Exception {
-        builder.userDetailsService(userDetailsSrv).passwordEncoder(passwEncoder);
+        builder.userDetailsService(userDetailsSrv).passwordEncoder(passwEncoder());
     }
 }

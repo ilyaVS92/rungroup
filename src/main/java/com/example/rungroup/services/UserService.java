@@ -10,6 +10,6 @@ public interface UserService {
     List<UserEntity> findAll ();
     void deleteUser (Long userId);
     boolean userRecordExists(String userName, String email);
-
+    UserEntity getCurrentUserEntity();
 
 }

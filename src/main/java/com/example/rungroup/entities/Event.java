@@ -39,5 +39,8 @@ public class Event {
     @JoinColumn(name="club_id", nullable = false)
     private ClubEntity club;
 
+    // @ManyToOne
+    // @JoinColumn(name="user_id", nullable = false)
+    // private UserEntity user;
 
 }

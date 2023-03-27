@@ -15,6 +15,8 @@ import javax.validation.Valid;
 
 import com.example.rungroup.dto.ClubDto;
 import com.example.rungroup.entities.ClubEntity;
+import com.example.rungroup.entities.UserEntity;
+import com.example.rungroup.security.SecurityUtil;
 import com.example.rungroup.services.*;
 import lombok.AllArgsConstructor;
 
@@ -23,6 +25,7 @@ import lombok.AllArgsConstructor;
 // @RequestMapping("/club")
 public class ClubController {
     
+    private UserService userService;
     private ClubService clubService;
 
     @GetMapping("/test")
@@ -32,6 +35,7 @@ public class ClubController {
 
     @GetMapping("/clubs")
     public String listClubs(Model model){
+        model.addAttribute("user", userService.getCurrentUserEntity());
         List<ClubDto> clubs = clubService.findAll();
         model.addAttribute("clubs",clubs);
         return "clubs-list";
@@ -55,6 +59,7 @@ public class ClubController {
 
     @GetMapping("/clubs/{id}/edit")
     public String editClub (@PathVariable("id") Long id, Model model){
+        model.addAttribute("user", userService.getCurrentUserEntity());
         ClubDto club = clubService.findById(id);
         model.addAttribute("club", club);
         return "clubs-edit";
@@ -77,6 +82,7 @@ public class ClubController {
 
     @GetMapping("/clubs/{id}")
     public String getDetailsById (@PathVariable("id") Long id, Model model){
+        model.addAttribute("user", userService.getCurrentUserEntity());
         model.addAttribute("club", clubService.findById(id));
         return "clubs-details";
     }

@@ -96,7 +96,7 @@ public class EventController {
         //     model.addAttribute("event", event);
         //     model.addAttribute("results", results);
         //     return "events-edit";
-        // } 
+        // }
         eventSrv.updateEvent(event, eventId, clubId);
         return "events-detail";
     }

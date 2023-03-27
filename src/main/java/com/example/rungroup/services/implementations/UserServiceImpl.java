@@ -15,6 +15,7 @@ import com.example.rungroup.entities.RoleEntity;
 import com.example.rungroup.entities.UserEntity;
 import com.example.rungroup.mappers.UserMapper;
 import com.example.rungroup.repos.UserRepo;
+import com.example.rungroup.security.SecurityUtil;
 import com.example.rungroup.services.RoleService;
 import com.example.rungroup.services.UserService;
 
@@ -46,6 +47,7 @@ public class UserServiceImpl implements UserService{
 
     @Override
     public UserEntity findByUserName(String userName) {
+        System.out.println("searching for userEntity by username = "+userName);
         return userRepo.findByUserName(userName).orElseThrow();
     }
 
@@ -77,5 +79,21 @@ public class UserServiceImpl implements UserService{
     public boolean userFieldsOk (String username, String email){
 
         return false;
+    }
+
+    @Override
+    public UserEntity getCurrentUserEntity(){
+        // UserEntity userEntity = new UserEntity();
+        // String username = SecurityUtil.getSessionUser();
+        // if (username!=null){
+        //     model.addAttribute("user", userService.findByUserName(username));
+        //     System.out.println("/clubs - listClubs retunred username not found");
+        // } else {
+        //     model.addAttribute("user", userEntity);
+        // }
+        UserEntity user = SecurityUtil.getSessionUser().equals("dne") ? new UserEntity() : findByUserName(SecurityUtil.getSessionUser());
+        System.out.println("====================== getCurrentUserEntity() -> found user with id = "+user.getId());
+        return user;
+        
     }
 }

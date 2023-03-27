@@ -35,8 +35,10 @@
                                 <div class="hidden" th:field="${club.id}"></div>
                                 <p class="card-text" th:text="${club.content}">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Reiciendis aliquid atque, nulla? Quos cum ex quis soluta, a laboriosam. Dicta expedita corporis animi vero voluptate voluptatibus possimus, veniam magni quis!</p>
                                 <form type="button" th:method="post" th:action="@{/clubs/{id}/delete(id=${club.id})}" class="btn btn-danger">DELETE CLUB</form>
-                                <a class="btn btn-primary" th:href="@{/clubs/{id}/delete(id=${club.id})}">DELETE</a>
-                                <a class="btn btn-primary" th:href="@{/clubs/{id}/event/new(id=${club.id})}">CREATE EVENT</a>
+                                <div th:if="${user.id} == ${club.createdBy.id}">
+                                    <a class="btn btn-primary" th:href="@{/clubs/{id}/delete(id=${club.id})}">DELETE</a>
+                                    <a class="btn btn-primary" th:href="@{/clubs/{id}/event/new(id=${club.id})}">CREATE EVENT</a>
+                                </div>
                             </div>
                         </div>
                         <!-- Nested row for non-featured blog posts-->
