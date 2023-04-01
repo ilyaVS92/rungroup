@@ -32,7 +32,7 @@ import lombok.RequiredArgsConstructor;
 @AllArgsConstructor
 @Getter
 @Setter
-public class ClubEntity {
+public class ClubEntity{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -52,6 +52,6 @@ public class ClubEntity {
     private UserEntity createdBy;
 
     @OneToMany(mappedBy = "club", cascade = CascadeType.REMOVE)
-    private List<Event> eventList = new ArrayList<>();
+    private List<EventEntity> eventList = new ArrayList<>();
     
 }

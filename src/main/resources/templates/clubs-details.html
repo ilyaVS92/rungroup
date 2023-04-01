@@ -35,7 +35,7 @@
                                 <div class="hidden" th:field="${club.id}"></div>
                                 <p class="card-text" th:text="${club.content}">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Reiciendis aliquid atque, nulla? Quos cum ex quis soluta, a laboriosam. Dicta expedita corporis animi vero voluptate voluptatibus possimus, veniam magni quis!</p>
                                 <form type="button" th:method="post" th:action="@{/clubs/{id}/delete(id=${club.id})}" class="btn btn-danger">DELETE CLUB</form>
-                                <div th:if="${user.id} == ${club.createdBy.id}">
+                                <div th:if="${user.id} == ${club.authorId}">
                                     <a class="btn btn-primary" th:href="@{/clubs/{id}/delete(id=${club.id})}">DELETE</a>
                                     <a class="btn btn-primary" th:href="@{/clubs/{id}/event/new(id=${club.id})}">CREATE EVENT</a>
                                 </div>
@@ -50,7 +50,7 @@
                                     <div class="card-body">
                                         <div class="small text-muted" th:text="${#temporals.format(event.createdOn, 'dd-MMM-yyyy HH:mm')}"></div>
                                         <h2 th:text="${event.name}" class="card-title h4">Event Title</h2>
-                                        <div type="hidden" th:field="${event.id}"></div>
+                                        <div type="hidden" th:input="${event.id}"></div>
                                         <p class="card-text">la vergogna e dolore sono per sempre qui con me, non mi lasciano ne di giorno ne di notte consectetur adipisicing elit. Reiciendis aliquid atque, nulla.</p>
                                         <a class="btn btn-primary" th:href="@{/clubs/{clubId}/events/{eventId}(eventId=${event.id},clubId=${club.id})}">Read more →</a>
                                     </div>

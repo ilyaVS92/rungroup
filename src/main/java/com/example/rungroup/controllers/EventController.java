@@ -27,18 +27,53 @@ import org.springframework.web.bind.annotation.RequestBody;
 // @RequestMapping("/events")
 public class EventController {
     private EventService eventSrv;
-    private ClubService clubSrv;
+    // private ClubService clubSrv;
+    private UserService userSrv;
 
-    @GetMapping("/clubs/{id}/event/new")
-    public String createEvent (@PathVariable("id") Long id, Model model){
-        System.out.println("=================================================> creat event "+id+" GET MAPPING");
-
-        Event event = new Event();
-        // model.addAttribute("club", clubSrv.findById(id));
-        model.addAttribute("clubId", id);
-        model.addAttribute("event", event);
-        return "events-create";
+    @GetMapping("/events")
+    public String eventList (Model model){
+        List<EventDto> eventDtoList = eventSrv.findAllEvents();
+        model.addAttribute("events", eventDtoList);
+        model.addAttribute("user", userSrv.getCurrentUserEntity());
+        return "events-list";
     }
+
+    @GetMapping("/clubs/{clubId}/events/{eventId}")
+    public String displayEventDetails (Model model, @PathVariable("clubId") Long clubId, @PathVariable("eventId") Long id){
+        System.out.println("-------------------------------------displayEventDetails - ID="+id);
+        model.addAttribute("clubId", clubId);
+        model.addAttribute("event", eventSrv.findById(id));
+        model.addAttribute("user", userSrv.getCurrentUserEntity());
+        return "events-detail";
+    }
+
+    @GetMapping("/clubs/{clubId}/events/form")
+    public String displayFormNewEvent (@PathVariable("clubId") Long clubId, Model model, @RequestParam(required=false) Long eventId){
+        System.out.println("---------------> EventController.displayForm clubId= "+clubId+"; eventId= "+eventId);
+
+        if (eventSrv.userHasAuthority(eventId)){
+            model.addAttribute("clubId", clubId);
+            model.addAttribute("event", eventSrv.findById(eventId));
+            return "events-edit";
+        }
+        return "redirect:/clubs/{clubId}/events/"+eventId+"?authFail";
+    }
+
+    @PostMapping("/clubs/{clubId}/event/new")
+    public String saveNewEvent (Model model,
+                            BindingResult result,
+                            @PathVariable("clubId") Long clubId, 
+                             @ModelAttribute("event") @Valid EventDto event){
+        System.out.println("=================================================> creat event "+clubId+" POST MAPPING");
+        if (result.hasErrors()){
+            model.addAttribute("event", event);
+            return "events-create";
+        }
+        eventSrv.save(event, clubId);
+        return "redirect:/clubs/"+clubId;
+    }
+    //======================================================================================================================
+
     //create a unified form for edit and create operations >>>
     // @GetMapping("/form")
     // public String getForm (@RequestParam(required=false) Long id, Model model){
@@ -46,64 +81,64 @@ public class EventController {
     //     return "events-create";
     // })
 
-    @PostMapping("/clubs/{clubId}/event/new")
-    public String createNewEvent (@PathVariable("clubId") Long id, @ModelAttribute("event") @Valid EventDto event){
-        System.out.println("=================================================> creat event "+id+" POST MAPPING");
-        eventSrv.createEvent(event, id);
-        return "redirect:/clubs";
-    }
+    // @GetMapping("/events/{eventId}")
+    // public String detailsFromEventList (@PathVariable("eventId") Long eventId){
+    //     // Long clubId = eventSrv.findById(eventId).getClubId();
+    //     Long clubId = eventSrv.findById(eventId).getClub().getId();
+    //     return "redirect:/clubs/{"+clubId+"}/events/{"+eventId+"}";
+    // }
 
-    @GetMapping("/events")
-    public String eventList (Model model){
-        List<EventDto> eventDtoList = eventSrv.findAllEvents();
-        model.addAttribute("events", eventDtoList);
-        return "events-list";
-    }
+    // @GetMapping("/events/{eventId}/edit")
+    // public String editFromEventList (@PathVariable("eventId") Long eventId){
+    //     // Long clubId = eventSrv.findById(eventId).getClubId();
+    //     Long clubId = eventSrv.findById(eventId).getClub().getId();
+    //     return "redirect:/clubs/{"+clubId+"}/events/{"+eventId+"}/edit";
+    // }
 
-    @GetMapping("/events/{eventId}")
-    public String detailsFromEventList (@PathVariable("eventId") Long eventId){
-        Long clubId = eventSrv.findById(eventId).getClub().getId();
-        return "redirect:/clubs/{"+clubId+"}/events/{"+eventId+"}";
-    }
 
-    @GetMapping("/events/{eventId}/edit")
-    public String editFromEventList (@PathVariable("eventId") Long eventId){
-        Long clubId = eventSrv.findById(eventId).getClub().getId();
-        return "redirect:/clubs/{"+clubId+"}/events/{"+eventId+"}/edit";
-    }
-
-    @GetMapping("/clubs/{clubId}/events/{eventId}")
-    public String eventDetails (@PathVariable("clubId") Long clubId, @PathVariable("eventId") Long id, Model model){
-        System.out.println("-------------------------------------getmapping event details - ID="+id);
-        model.addAttribute("clubId", clubId);
-        model.addAttribute("event", eventSrv.findById(id));
-        return "events-detail";
-    }
 
     @GetMapping("/clubs/{clubId}/events/{eventId}/edit")
-    public String editEvent(@PathVariable("clubId") Long clubId, @PathVariable("eventId") Long eventId, Model model, @Valid EventDto eventDto){
-        EventDto localEventDto = eventSrv.findById(eventId);
-        model.addAttribute("event", localEventDto);
-        return "events-edit";
+    public String displayEventEditForm (Model model, @PathVariable("clubId") Long clubId, @PathVariable("eventId") Long eventId, @Valid EventDto eventDto){
+        if (eventSrv.userHasAuthority(eventId)){
+            EventDto localEventDto = eventSrv.findById(eventId);
+            model.addAttribute("event", localEventDto);
+            System.out.println("---------------> EventController.displayEventEditForm -> displaying: "+localEventDto.toString());
+            return "events-edit";
+        }
+        return "redirect:?userFail";
     }
 
     @PostMapping("/clubs/{clubId}/events/{eventId}/edit")
-    public String saveEditedEvent (@PathVariable("clubId") Long clubId, 
-    Model model,
-    // BindingResult results,
-    @Valid @ModelAttribute ("event") EventDto event, @PathVariable("eventId") Long eventId){
-        // if (results.hasErrors()){
-        //     model.addAttribute("event", event);
-        //     model.addAttribute("results", results);
-        //     return "events-edit";
-        // }
+    public String saveEditedEvent (@Valid @ModelAttribute ("event") EventDto event, 
+                                    Model model,
+                                    BindingResult result,
+                                    @PathVariable("eventId") Long eventId,
+                                    @PathVariable("clubId") Long clubId){
+
+        if (result.hasErrors()){
+            model.addAttribute("event", event);
+            return "events-edit?hasErrors";
+        }
+        // System.out.println("------> 1. EventController.updateEvent() retriving event: "+event.toString());
+        // EventDto localDto = eventSrv.findById(eventId);
+        // event.setId(eventId);
+        // event.setClub(localDto.getClub());
+        System.out.println("------> 2. EventController.updateEvent() retriving event: "+event.toString());
         eventSrv.updateEvent(event, eventId, clubId);
-        return "events-detail";
+        return "redirect:/clubs/"+clubId;
     }
 
     @PostMapping("/clubs/{clubId}/events/{eventId}/delete")
     public String deleteEvent(@PathVariable("eventId") Long eventId, @PathVariable("clubId") Long clubId) {
-        eventSrv.delete(eventId);
-        return "redirect:/clubs/{clubId}";
+        System.out.println("---------------> EventController.deleteEvent eventID="+eventId+" clubID="+clubId);
+
+        if (eventSrv.userHasAuthority(eventId)){
+            System.out.println("---------------> EventController.deleteEvent USER AUTH=true for eventID="+eventId+" clubID="+clubId);
+
+            eventSrv.delete(eventId);
+            return "redirect:/clubs/"+clubId;
+        }
+        return "redirect:?deleteFail";
+
     }
 }

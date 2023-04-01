@@ -5,14 +5,14 @@ import java.util.List;
 import javax.validation.Valid;
 
 import com.example.rungroup.dto.EventDto;
-import com.example.rungroup.entities.Event;
+import com.example.rungroup.entities.EventEntity;
 
 public interface EventService {
-    void createEvent (EventDto eventDto, Long clubId);
-    List<Event> findAllByClubId (Long id);
+    List<EventEntity> findAllByClubId (Long id);
     List<EventDto> findAllEvents();
     EventDto findById(Long id);
-    void save(@Valid EventDto event);
-    void updateEvent(EventDto eventDto, Long eventId, Long clubId);
-    void delete(Long eventId);
+    boolean save(EventDto event, Long clubId);
+    boolean updateEvent(EventDto eventDto, Long eventId, Long clubId);
+    boolean delete(Long eventId);
+    boolean userHasAuthority(Long eventId);
 }

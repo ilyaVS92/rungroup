@@ -10,14 +10,15 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.BindingResult;
 
+import com.example.rungroup.dto.ClubDto;
+import com.example.rungroup.dto.EventDto;
 import com.example.rungroup.dto.RegistrationDto;
 import com.example.rungroup.entities.RoleEntity;
-import com.example.rungroup.entities.UserEntity;
 import com.example.rungroup.mappers.UserMapper;
+import com.example.rungroup.entities.*;
 import com.example.rungroup.repos.UserRepo;
 import com.example.rungroup.security.SecurityUtil;
-import com.example.rungroup.services.RoleService;
-import com.example.rungroup.services.UserService;
+import com.example.rungroup.services.*;
 
 import lombok.AllArgsConstructor;
 @AllArgsConstructor
@@ -26,17 +27,12 @@ public class UserServiceImpl implements UserService{
 
     private UserRepo userRepo;
     private RoleService roleSrv;
+    // private EventService eventSrv;
+    // private ClubService clubSrv;
     private BCryptPasswordEncoder passwEncoder;
 
     @Override
     public UserEntity findById(Long userId) throws EntityNotFoundException{
-        // try {
-        //     return userRepo.findById(userId).get();
-        // } catch (EntityNotFoundException e){
-        //     System.out.println(e.getMessage()+" <- findByID() in UserServiceImpl");
-        // }
-        // // return user;
-        // System.out.println("something went wrong<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
         return userRepo.findById(userId).orElseThrow();
     }
 
@@ -47,7 +43,7 @@ public class UserServiceImpl implements UserService{
 
     @Override
     public UserEntity findByUserName(String userName) {
-        System.out.println("searching for userEntity by username = "+userName);
+        System.out.println("---------------> UserServImpl.findByUsername = "+userName);
         return userRepo.findByUserName(userName).orElseThrow();
     }
 
@@ -76,24 +72,20 @@ public class UserServiceImpl implements UserService{
         }
         return false;
     }
-    public boolean userFieldsOk (String username, String email){
-
-        return false;
-    }
 
     @Override
     public UserEntity getCurrentUserEntity(){
-        // UserEntity userEntity = new UserEntity();
-        // String username = SecurityUtil.getSessionUser();
-        // if (username!=null){
-        //     model.addAttribute("user", userService.findByUserName(username));
-        //     System.out.println("/clubs - listClubs retunred username not found");
-        // } else {
-        //     model.addAttribute("user", userEntity);
-        // }
-        UserEntity user = SecurityUtil.getSessionUser().equals("dne") ? new UserEntity() : findByUserName(SecurityUtil.getSessionUser());
-        System.out.println("====================== getCurrentUserEntity() -> found user with id = "+user.getId());
+        UserEntity user = SecurityUtil.getSessionUser().equals("dne") 
+        ? new UserEntity() 
+        : findByUserName(SecurityUtil.getSessionUser());
+        // UserEntity user = SecurityUtil.getSessionUser().equals("dne") ? null : findByUserName(SecurityUtil.getSessionUser());
+        System.out.println("---------------> UserServiceImpl.getCurrentUserEntity() found user with id = "+user.getId());
         return user;
         
+    }
+
+    @Override
+    public boolean userIsAdmin(){
+        return getCurrentUserEntity().getRoles().stream().anyMatch(r -> "ADMIN".equals(r.getName()));
     }
 }

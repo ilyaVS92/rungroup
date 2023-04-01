@@ -6,6 +6,7 @@ import org.springframework.context.annotation.Bean;
 
 import static org.springframework.security.config.Customizer.withDefaults;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -26,18 +27,17 @@ public class SecurityConfig {
     @Bean
     public static BCryptPasswordEncoder passwEncoder(){
         return new BCryptPasswordEncoder();
-    };
-
-
-
+    }
 
     @Bean
     public SecurityFilterChain FilterChain (HttpSecurity http) throws Exception{
 
         http.csrf().disable()
         .authorizeRequests()
-        .antMatchers("/auth/login", "/auth/register", "*/css/**", "*/js/**")
-        .permitAll()
+
+        // .requestMatchers(HttpMethod.POST).hasRole("ADMIN").permitAll()
+        // .requestMatchers("/auth/login", "/auth/register", "*/css/**", "*/js/**").permitAll()
+        .antMatchers("/auth/login", "/auth/register", "*/css/**", "*/js/**").permitAll()
         .and()
         .formLogin(form -> form.loginPage("/auth/login")
             .defaultSuccessUrl("/clubs")

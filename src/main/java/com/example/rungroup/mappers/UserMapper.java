@@ -11,7 +11,6 @@ public class UserMapper {
         .password(regDto.getPassword())
         .build();
     }
-
     public static RegistrationDto mapToRegDto(UserEntity user){
         return RegistrationDto.builder()
         .userName(user.getUserName())

@@ -1,49 +1,50 @@
 package com.example.rungroup.mappers;
-
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.time.LocalDateTime;
+import com.example.rungroup.dto.*;
+import com.example.rungroup.entities.*;
+import com.example.rungroup.services.*;
 
-
-import com.example.rungroup.dto.EventDto;
-import com.example.rungroup.entities.Event;
-import com.example.rungroup.entities.Event.EventBuilder;
-
-import org.springframework.context.annotation.Bean;
-
-
-import lombok.AllArgsConstructor;
-
-// @Component
-// @AllArgsConstructor
+@Component
 public class EventMapper {
+    // private ClubService clubSrv;
+    // private UserService userSrv;
 
-    public static Event mapToEvent(EventDto eventDto) {
-        Event event = new Event();
-        event.setId(eventDto.getId());
-        event.setName(eventDto.getName());
-        event.setStartTime(eventDto.getStartTime());
-        event.setEndTime(eventDto.getEndTime());
-        event.setType(eventDto.getType());
-        event.setPhotoUrl(eventDto.getPhotoUrl());
-        event.setCreatedOn(eventDto.getCreatedOn());
-        event.setUpdatedOn(eventDto.getUpdatedOn());
-        event.setClub(eventDto.getClub());
-        return event;
+    public static EventEntity mapToEvent(EventDto eventDto) {
+        // event.setClub(clubSrv.findEntityById(eventDto.getClubId()));
+        // event.setCreatedBy(userSrv.findById(eventDto.getAuthorId()));
+
+        return EventEntity.builder()
+        .id(eventDto.getId())
+        .name(eventDto.getName())
+        .startTime(eventDto.getStartTime())
+        .endTime(eventDto.getEndTime())
+        .type(eventDto.getType())
+        .photoUrl(eventDto.getPhotoUrl())
+        .createdOn(eventDto.getCreatedOn())
+        .updatedOn(eventDto.getUpdatedOn())
+        .club(eventDto.getClub())
+        // .createdBy(eventDto.getCreatedBy())
+        .build();
     }
 
+    public static EventDto mapToEventDto (EventEntity event){
+        // System.out.println("---------------> EventMapper.mapToDto: event="+event.toString());
+        // // eventDto.setClubId(event.getClub().getId());
+        // // eventDto.setAuthorId(event.getCreatedBy().getId());
 
-    public static EventDto mapToEventDto (Event event){
-        EventDto eventDto = new EventDto();
-        eventDto.setId(event.getId());
-        eventDto.setName(event.getName());
-        eventDto.setStartTime(event.getStartTime());
-        eventDto.setEndTime(event.getEndTime());
-        eventDto.setType(event.getType());
-        eventDto.setPhotoUrl(event.getPhotoUrl());
-        eventDto.setCreatedOn(event.getCreatedOn());
-        eventDto.setUpdatedOn(event.getUpdatedOn());
-        eventDto.setClub(event.getClub());
-        return eventDto;
+        return EventDto.builder()
+        .id(event.getId())
+        .name(event.getName())
+        .startTime(event.getStartTime())
+        .endTime(event.getEndTime())
+        .type(event.getType())
+        .photoUrl(event.getPhotoUrl())
+        .createdOn(event.getCreatedOn())
+        .updatedOn(event.getUpdatedOn())
+        .club(event.getClub())
+        // .createdBy(event.getCreatedBy())
+        .build();
     }
 }

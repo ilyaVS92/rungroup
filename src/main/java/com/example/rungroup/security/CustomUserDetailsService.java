@@ -29,7 +29,9 @@ public class CustomUserDetailsService implements UserDetailsService{
                 userEntity.getUserName(),
                 // userEntity.getEmail(),
                 userEntity.getPassword(),
-                userEntity.getRoles().stream().map(role -> new SimpleGrantedAuthority(role.getName())).collect(Collectors.toList())
+                userEntity.getRoles().stream()
+                    .map(role -> new SimpleGrantedAuthority(role.getName()))
+                    .collect(Collectors.toList())
             );
             return authUser;
         } else {

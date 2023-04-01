@@ -36,7 +36,7 @@
                         <a class="btn btn-primary" th:href="@{/clubs/{clubId}/edit(clubId=${club.id})}">Edit</a>
                     </div>-->
 
-                    <div th:if="${user.id} == ${club.createdBy.id}">
+                    <div th:if="${user.id} == ${club.authorId}">
                         <a class="btn btn-primary" th:href="@{/clubs/{clubId}/edit(clubId=${club.id})}">EDIT (for users only)</a>
                     </div>
                 </div>

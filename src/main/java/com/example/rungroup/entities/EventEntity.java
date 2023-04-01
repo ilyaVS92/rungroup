@@ -20,8 +20,8 @@ import lombok.*;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Entity
-public class Event {
+@Entity(name="Event")
+public class EventEntity{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -39,8 +39,8 @@ public class Event {
     @JoinColumn(name="club_id", nullable = false)
     private ClubEntity club;
 
-    // @ManyToOne
-    // @JoinColumn(name="user_id", nullable = false)
-    // private UserEntity user;
+    @ManyToOne
+    @JoinColumn(name="created_by", nullable = false)
+    private UserEntity createdBy;
 
 }

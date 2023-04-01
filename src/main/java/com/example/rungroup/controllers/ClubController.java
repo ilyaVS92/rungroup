@@ -25,18 +25,13 @@ import lombok.AllArgsConstructor;
 // @RequestMapping("/club")
 public class ClubController {
     
-    private UserService userService;
-    private ClubService clubService;
-
-    @GetMapping("/test")
-    public String test(){
-        return "basic";
-    }
+    private UserService userSrv;
+    private ClubService clubSrv;
 
     @GetMapping("/clubs")
     public String listClubs(Model model){
-        model.addAttribute("user", userService.getCurrentUserEntity());
-        List<ClubDto> clubs = clubService.findAll();
+        model.addAttribute("user", userSrv.getCurrentUserEntity());
+        List<ClubDto> clubs = clubSrv.findAll();
         model.addAttribute("clubs",clubs);
         return "clubs-list";
     }
@@ -53,49 +48,51 @@ public class ClubController {
         if (result.hasErrors()){
             return "clubs-create";
         }
-        clubService.save(clubDto);
+        clubSrv.save(clubDto);
         return "redirect:/clubs";
     }
 
-    @GetMapping("/clubs/{id}/edit")
-    public String editClub (@PathVariable("id") Long id, Model model){
-        model.addAttribute("user", userService.getCurrentUserEntity());
-        ClubDto club = clubService.findById(id);
-        model.addAttribute("club", club);
-        return "clubs-edit";
+    @GetMapping("/clubs/{clubId}/edit")
+    public String getClubEditForm (@PathVariable("clubId") Long clubId, Model model){
+        if (clubSrv.userHasAuthority(clubId)){
+            model.addAttribute("user", userSrv.getCurrentUserEntity());
+            model.addAttribute("club", clubSrv.findById(clubId));
+            return "clubs-edit";
+        }
+        return "redirect:?authFail";
     }
 
-    @PostMapping("/clubs/{id}/edit")
-    public String updateClub (@PathVariable("id") Long id, @ModelAttribute("club") @Valid ClubDto club, BindingResult result){
+    @PostMapping("/clubs/{clubId}/edit")
+    public String saveClubEdits (@PathVariable("clubId") Long clubId, @ModelAttribute("club") @Valid ClubDto clubDto, BindingResult result){
+        System.out.println("---update club method in controller------------------> "+clubDto.toString());
+        System.out.println("=====================@PostMapping updateClub");
             if (result.hasErrors()){
                 return "clubs-edit";
             }
-        club.setId(id);
-        clubService.updateClub(club);
+        clubSrv.updateClub(clubDto, clubId);
         return "redirect:/clubs";
     }
 
-    @GetMapping("/default")
-    public String testPage(){
-        return "layout";
-    }
-
-    @GetMapping("/clubs/{id}")
-    public String getDetailsById (@PathVariable("id") Long id, Model model){
-        model.addAttribute("user", userService.getCurrentUserEntity());
-        model.addAttribute("club", clubService.findById(id));
+    @GetMapping("/clubs/{clubId}")
+    public String getDetailsById (@PathVariable("clubId") Long clubId, Model model){
+        model.addAttribute("user", userSrv.getCurrentUserEntity());
+        model.addAttribute("club", clubSrv.findById(clubId));
         return "clubs-details";
     }
 
-    @GetMapping("/clubs/{id}/delete")
-    public String deleteClub (@PathVariable("id") Long id){
-        clubService.deleteByid(id);
-        return "redirect:/clubs";
+    @GetMapping("/clubs/{clubId}/delete")
+    public String deleteClub (@PathVariable("clubId") Long clubId){
+        if (clubSrv.userHasAuthority(clubId)){
+            clubSrv.deleteByid(clubId);
+            return "/clubs/";
+        }
+        return "redirect:?authFailed";
     }
 
     @GetMapping("/clubs/search")
     public String searchClub (@RequestParam(value="query") String query, Model model){
-        List<ClubDto> clubDtoList = clubService.searchClubs(query);
+        model.addAttribute("user", userSrv.getCurrentUserEntity());
+        List<ClubDto> clubDtoList = clubSrv.searchClubs(query);
         model.addAttribute("clubs", clubDtoList);
         return "clubs-list";
     }

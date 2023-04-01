@@ -28,16 +28,22 @@
             <div class="small text-muted" th:text="${event.createdOn}"></div>
             <h2 class="card-title">About this running event</h2>
             <p class="card-text" th:text="${event.type}"></p>
-            <div type="hidden" th:value="${event.id}"></div>
-            <a class="btn btn-primary" th:object=${clubId} th:href="@{/clubs/{clubId}/events/{eventId}/edit(clubId = ${clubId},eventId=${event.id})}">EditS</a>
-            <form method="post" th:action="@{/clubs/{clubId}/events/{eventId}/delete(clubId = ${clubId}, eventId=${event.id})}">
-              <button type="submit" class="btn btn-primary">DELETE BTTN</button>
-              <!--<a class="btn btn-primary" th:method ="post" th:href="@{/clubs/{clubId}/events/{eventId}/delete(clubId = ${clubId}, eventId=${event.id})}">DeleteS</a>-->
-            </form>
+            <div th:if="${user.id} == ${event.club.createdBy.id}">
+              <a class="btn btn-primary" th:object=${clubId} th:href="@{/clubs/{clubId}/events/{eventId}/edit(clubId = ${clubId},eventId=${event.id})}">Edit</a></div>
+              <div th:if="${param.userFail}" class="alert alert-success">User does not have rights to edit this event</div>
 
-            <!--<div th:if="${user.id} == ${event.club.createdBy.id}">
-              <a class="btn btn-primary" th:href="@{/events/{eventId}/delete(eventId=${event.id})}">Delete</a>
-            </div>-->
+            <form method="get" th:action="@{/clubs/{clubId}/events/form(id=${event.id}, clubId=${clubId})}">
+              <button type="submit" class="btn btn-primary">EDIT th:action</button>
+              <div th:if="${param.authFail}" class="alert alert-success">User does not have rights to edit this event</div>
+            </form>
+            <a role="button" class="btn btn-primary" th:href="@{/clubs/{clubId}/events/form(eventId=${event.id}, clubId=${clubId})}">EDIT th:href</a>
+            <div th:if="${param.authFail}" class="alert alert-success">User does not have rights to edit this event</div>
+
+
+            <form method="post" th:action="@{/clubs/{clubId}/events/{eventId}/delete(clubId = ${clubId}, eventId=${event.id})}">
+              <button type="submit" class="btn btn-primary">DELETE</button>
+              <div th:if="${param.deleteFail}" class="alert alert-success">User does not have rights to delete this event</div>
+            </form>
         </div>
       </div>
       <!-- Side widgets-->

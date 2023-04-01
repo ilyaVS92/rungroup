@@ -20,7 +20,7 @@ import lombok.Builder;
 @Builder
 @Getter
 @Setter
-public class EventDto {
+public class EventDto{
     private Long id;
     private String name;
     private String type;
@@ -33,5 +33,8 @@ public class EventDto {
     private LocalDateTime updatedOn;
 
     private ClubEntity club;
-    // private UserEntity user;
+    // private UserEntity createdBy;
+
+    // private Long clubId;
+    private Long authorId;
 }

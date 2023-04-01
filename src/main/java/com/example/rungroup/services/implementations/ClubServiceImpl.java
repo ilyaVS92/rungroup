@@ -1,6 +1,4 @@
 package com.example.rungroup.services.implementations;
-import com.example.rungroup.mappers.*;
-
 import java.util.List;
 import java.util.Optional;
 
@@ -10,8 +8,10 @@ import com.example.rungroup.dto.*;
 import com.example.rungroup.repos.*;
 import com.example.rungroup.security.SecurityUtil;
 import com.example.rungroup.services.ClubService;
+import com.example.rungroup.services.EventService;
 import com.example.rungroup.services.UserService;
 import com.example.rungroup.entities.*;
+import com.example.rungroup.mappers.ClubMapper;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -26,8 +26,9 @@ import lombok.AllArgsConstructor;
 public class ClubServiceImpl implements ClubService {
 
     private ClubRepo clubRepo;
-    private UserRepo userRepo;
-    private UserService userServ;
+    // private UserRepo userRepo;
+    private UserService userSrv;
+    // private EventService eventSrv;
 
     @Override
     public List<ClubDto> findAll() {
@@ -41,7 +42,8 @@ public class ClubServiceImpl implements ClubService {
     public void save(ClubDto clubDto) {
         String userName = SecurityUtil.getSessionUser();
         ClubEntity club = ClubMapper.mapToClub(clubDto);
-        club.setCreatedBy(userServ.findByUserName(userName));
+        club.setCreatedOn(LocalDateTime.now());
+        club.setCreatedBy(userSrv.findByUserName(userName));
         clubRepo.save(club);
     }
 
@@ -53,12 +55,17 @@ public class ClubServiceImpl implements ClubService {
         return ClubMapper.mapToClubDto(clubRepo.findById(id).orElseThrow());
     }
 
-    public void updateClub(ClubDto clubDto){
-        String userName = SecurityUtil.getSessionUser();
-        ClubEntity club = ClubMapper.mapToClub(clubDto);
-        club.setCreatedBy(userServ.findByUserName(userName));
-        clubRepo.save(club);
-        // clubRepo.save(ClubMapper.mapToClub(clubDto).setCreatedBy(userServ.findByUserName(SecurityUtil.getSessionUser())));
+    public boolean currentUserIsAuthor (Long clubDtoId){
+        return findById(clubDtoId).getAuthorId() == userSrv.getCurrentUserEntity().getId(); 
+    }
+
+    public void updateClub(ClubDto clubDto, Long clubId){
+        //the clubDto comes in without an eventlist or a user attached
+        if (userHasAuthority(clubId)){
+            clubDto.setUpdatedOn(LocalDateTime.now());
+            clubRepo.save(convertToEntity(clubDto, clubId));
+        }
+        throw new RuntimeException("User does not have authority to modify club with id = "+clubId);
     }
 
     @Override
@@ -71,10 +78,35 @@ public class ClubServiceImpl implements ClubService {
 
     @Override
     public void deleteByid(Long id) {
-        if (clubRepo.findById(id).isPresent()){
-            clubRepo.deleteById(id);
-        } else{
-            throw new RuntimeException("no record with id = "+id+" found");
-        }
+        if (userHasAuthority(id)){
+            if (clubRepo.findById(id).isPresent()){
+                clubRepo.deleteById(id);
+            } else{
+                throw new RuntimeException("no record with id = "+id+" found");
+            }
+    } else {
+        throw new RuntimeException("user doesn't have the authority to delete event");
     }
+
+    }
+    @Override
+    public boolean userHasAuthority (Long clubDtoId){
+        Long currentUserId = userSrv.getCurrentUserEntity().getId();
+
+        return 
+        currentUserId != null
+        &&
+        (findById(clubDtoId).getAuthorId() == currentUserId || userSrv.userIsAdmin());
+    }
+
+    private ClubEntity convertToEntity (ClubDto clubDto, Long clubId){
+        ClubEntity clubEnt = ClubMapper.mapToClub(clubDto);
+
+        ClubEntity localClubEntity = findEntityById(clubId);
+        clubEnt.setId(localClubEntity.getId());
+        clubEnt.setEventList(localClubEntity.getEventList());
+        clubEnt.setCreatedBy(userSrv.getCurrentUserEntity());
+        return clubEnt;
+    }
+
 }
